@@ -1,5 +1,5 @@
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:0.9.10 as watchdog
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.7-alpine as build
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.11-alpine as build
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
@@ -23,6 +23,8 @@ COPY --chown=app:app index.py           .
 COPY --chown=app:app requirements.txt   .
 
 USER root
+ENV PIP_ROOT_USER_ACTION=ignore
+RUN pip install --upgrade pip >/dev/null 2>&1
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Build the function directory and install any user-specified components

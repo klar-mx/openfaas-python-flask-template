@@ -1,2 +1,12 @@
 language: python3-flask
 fprocess: python index.py
+build_options:
+  - name: psycopg2
+    packages: 
+      - gcc
+      - git
+      - linux-headers
+      - musl-dev
+      - postgresql-dev
+      - python3-dev
+      - python3-dev
