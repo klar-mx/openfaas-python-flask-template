@@ -31,24 +31,21 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
         pip install --no-cache-dir -r requirements.txt
 
 # Build the function directory and install any user-specified components
-USER app
-
 RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
 COPY --chown=app:app function/requirements.txt	.
-RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
     apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
     linux-headers \
     musl-dev \
     postgresql-dev \
-    && pip install --no-cache-dir --user -r requirements.txt \
+    && pip install --no-cache-dir -r requirements.txt \
     && apk del --no-cache .build-deps
 
-# install function code
-USER root
+# Install function code
 COPY --chown=app:app function/   .
 
 FROM build as test
@@ -59,7 +56,8 @@ RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAN
 FROM build as ship
 WORKDIR /home/app/
 
-#configure WSGI server and healthcheck
+# Configure WSGI server and healthcheck
+RUN chown -R app:app /home/app
 USER app
 
 ENV fprocess="python index.py"
