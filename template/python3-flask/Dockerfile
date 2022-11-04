@@ -27,7 +27,8 @@ COPY --chown=app:app requirements.txt   .
 USER root
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN pip install --upgrade pip >/dev/null 2>&1
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
+        pip install --no-cache-dir -r requirements.txt
 
 # Build the function directory and install any user-specified components
 USER app
