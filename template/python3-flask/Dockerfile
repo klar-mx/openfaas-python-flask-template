@@ -41,6 +41,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf 
     apk add --no-cache --virtual .build-deps \
     gcc \
     python3-dev \
+    linux-headers \
     musl-dev \
     postgresql-dev \
     && pip install --no-cache-dir --user -r requirements.txt \
