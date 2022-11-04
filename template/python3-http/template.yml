@@ -3,12 +3,20 @@ fprocess: python index.py
 build_options:
   - name: dev
     packages: 
-      - make
       - automake
-      - gcc
       - g++
-      - subversion
-      - python3-dev
-      - musl-dev
-      - libffi-dev
+      - gcc
       - git
+      - libffi-dev
+      - make
+      - musl-dev
+      - python3-dev
+      - subversion
+  - name: psycopg2
+    packages: 
+      - gcc
+      - git
+      - linux-headers
+      - musl-dev
+      - postgresql-dev
+      - python3-dev
