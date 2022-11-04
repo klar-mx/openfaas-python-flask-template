@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.3
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:0.9.10 as watchdog
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3-alpine as build
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.11-alpine as build
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
@@ -27,8 +27,15 @@ COPY --chown=app:app requirements.txt   .
 USER root
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN pip install --upgrade pip >/dev/null 2>&1
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
+    python3-dev \
+    musl-dev \
+    postgresql-dev \
+    && pip install --no-cache-dir psycopg2 \
+    && apk del --no-cache .build-deps
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
-        pip install --no-cache-dir -r requirements.txt
+	pip install --no-cache-dir -r requirements.txt
 
 # Build the function directory and install any user-specified components
 USER app
