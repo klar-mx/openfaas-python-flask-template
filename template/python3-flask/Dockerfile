@@ -1,5 +1,7 @@
+# syntax=docker/dockerfile:1.3
+
 FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:0.9.10 as watchdog
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.11-alpine as build
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3-alpine as build
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
@@ -34,13 +36,12 @@ RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
 COPY --chown=app:app function/requirements.txt	.
-RUN pip install --no-cache-dir --user -r requirements.txt
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
+        pip install --no-cache-dir --user -r requirements.txt
 
-#install function code
+# install function code
 USER root
-
 COPY --chown=app:app function/   .
-
 
 FROM build as test
 ARG TEST_COMMAND=tox
