@@ -42,7 +42,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
     python3-dev \
     linux-headers \
     musl-dev \
-    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -r function/requirements.txt \
     && apk del --no-cache .build-deps
 
 # Install function code
