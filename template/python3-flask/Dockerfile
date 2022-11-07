@@ -47,10 +47,10 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 # Install function code
 COPY --chown=app:app function/   .
 
-# FROM build as test
-# ARG TEST_COMMAND=tox
-# ARG TEST_ENABLED=true
-# RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAND"
+FROM build as test
+ARG TEST_COMMAND=tox
+ARG TEST_ENABLED=true
+RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAND"
 
 FROM build as ship
 WORKDIR /home/app/
