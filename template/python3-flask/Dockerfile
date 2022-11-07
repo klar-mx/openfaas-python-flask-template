@@ -9,7 +9,7 @@ RUN chmod +x /usr/bin/fwatchdog
 ARG ADDITIONAL_PACKAGE
 # Alternatively use ADD https:// (which will not be cached by Docker builder)
 
-RUN apk --no-cache add openssl-dev ${ADDITIONAL_PACKAGE}
+RUN apk --no-cache add openssl-dev postgresql-dev ${ADDITIONAL_PACKAGE}
 
 # Add non root user
 RUN addgroup -S app && adduser app -S -G app
@@ -25,7 +25,7 @@ COPY --chown=app:app index.py           .
 COPY --chown=app:app requirements.txt   .
 
 USER root
-ENV PIP_ROOT_USER_ACTION=ignore
+ARG PIP_ROOT_USER_ACTION=ignore
 RUN pip install --upgrade pip >/dev/null 2>&1
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
         pip install --no-cache-dir -r requirements.txt
@@ -35,7 +35,6 @@ RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
 COPY --chown=app:app function/requirements.txt	.
-RUN apk --no-cache add postgresql-dev
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
     apk add --no-cache --virtual .build-deps \
     gcc \
@@ -48,10 +47,10 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 # Install function code
 COPY --chown=app:app function/   .
 
-FROM build as test
-ARG TEST_COMMAND=tox
-ARG TEST_ENABLED=true
-RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAND"
+# FROM build as test
+# ARG TEST_COMMAND=tox
+# ARG TEST_ENABLED=true
+# RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAND"
 
 FROM build as ship
 WORKDIR /home/app/
