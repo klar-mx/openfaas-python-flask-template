@@ -34,7 +34,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
-COPY --chown=app:app function/requirements.txt	.
+COPY --chown=app:app requirements.txt	.
 RUN apk --no-cache add postgresql-dev
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
     apk add --no-cache --virtual .build-deps \
@@ -42,7 +42,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
     python3-dev \
     linux-headers \
     musl-dev \
-    && pip install --no-cache-dir -r function/requirements.txt \
+    && pip install --no-cache-dir -r requirements.txt \
     && apk del --no-cache .build-deps
 
 # Install function code
