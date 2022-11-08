@@ -60,7 +60,6 @@ RUN chown -R app:app /home/app
 USER app
 
 ENV fprocess="python index.py"
-
 ENV cgi_headers="true"
 ENV mode="http"
 ENV upstream_url="http://127.0.0.1:5000"
