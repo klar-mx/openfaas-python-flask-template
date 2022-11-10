@@ -22,7 +22,7 @@ class Context:
 def format_status_code(res):
     if 'statusCode' in res:
         return res['statusCode']
-    
+
     return 200
 
 def format_body(res, content_type):
@@ -45,7 +45,7 @@ def format_headers(res):
             header_tuple = (key, res['headers'][key])
             headers.append(header_tuple)
         return headers
-    
+
     return res['headers']
 
 def get_content_type(res):
@@ -73,7 +73,7 @@ def call_handler(path):
     context = Context()
 
     response_data = handler.handle(event, context)
-    
+
     res = format_response(response_data)
     return res
 
