@@ -27,7 +27,7 @@ COPY --chown=app:app index.py           .
 COPY --chown=app:app requirements.txt   .
 USER root
 ARG PIP_ROOT_USER_ACTION=ignore
-RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
         pip install --upgrade pip && \
         pip install --no-warn-script-location virtualenv poetry pipenv
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
@@ -39,7 +39,7 @@ RUN mkdir -p function
 RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
 COPY --chown=app:app function/requirements.txt	.
-RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
         pip install --no-cache-dir --user -r requirements.txt
 
 # Install function code
