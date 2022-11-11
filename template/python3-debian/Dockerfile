@@ -31,6 +31,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 # Build the function directory and install any user-specified components
 USER app
 
+RUN mv function/* .
 COPY --chown=app:app index.py           .
 COPY --chown=app:app requirements.txt   .
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
