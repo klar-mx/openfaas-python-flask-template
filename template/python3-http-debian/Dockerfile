@@ -45,7 +45,7 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf 
 
 # Install function code
 USER root
-COPY --chown=app:app function/   .
+#COPY --chown=app:app function/   .
 RUN chown -R app:app /home/app
 
 USER app
