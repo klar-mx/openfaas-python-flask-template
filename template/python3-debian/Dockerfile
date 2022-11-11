@@ -22,20 +22,35 @@ ENV PATH=$PATH:/home/app/.local/bin
 
 WORKDIR /home/app/
 
+COPY --chown=app:app index.py           .
+COPY --chown=app:app requirements.txt   .
+
 USER root
 ARG PIP_ROOT_USER_ACTION=ignore
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
         pip install --upgrade pip && \
         pip install --no-warn-script-location virtualenv poetry pipenv
+RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
+        pip install --no-cache-dir -r requirements.txt
 
 # Build the function directory and install any user-specified components
 USER app
 
-RUN mv function/* .
+RUN mkdir -p function
+RUN touch ./function/__init__.py
+WORKDIR /home/app/function/
 COPY --chown=app:app index.py           .
 COPY --chown=app:app requirements.txt   .
+COPY --chown=app:app function/requirements.txt	.
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
         pip install --no-cache-dir --user -r requirements.txt
+
+# Install function code
+USER root
+COPY --chown=app:app function/   .
+RUN chown -R app:app /home/app
+
+USER app
 
 FROM build as test
 ARG TEST_COMMAND=tox
