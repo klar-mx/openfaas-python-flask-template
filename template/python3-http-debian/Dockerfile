@@ -37,15 +37,15 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 USER app
 
 RUN mkdir -p function
-RUN touch ./function/__init__.py
 WORKDIR /home/app/function/
+RUN touch __init__.py
 COPY --chown=app:app function/requirements.txt	.
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
         pip install --no-cache-dir --user -r requirements.txt
 
 # Install function code
 USER root
-#COPY --chown=app:app function/   .
+COPY --chown=app:app ./function/.   /home/app/function/
 RUN chown -R app:app /home/app
 
 USER app
