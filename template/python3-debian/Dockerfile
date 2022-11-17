@@ -9,7 +9,7 @@ ARG ADDITIONAL_PACKAGE
 # Alternatively use ADD https:// (which will not be cached by Docker builder)
 
 RUN apt-get -qy update \
-    && apt-get -qy install vi ${ADDITIONAL_PACKAGE} \
+    && apt-get -qy install nvi ${ADDITIONAL_PACKAGE} \
     && rm -rf /var/lib/apt/lists/*
 
 # Add non root user
