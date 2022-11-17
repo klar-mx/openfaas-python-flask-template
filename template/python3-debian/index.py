@@ -1,5 +1,7 @@
 import sys
-sys.path.append('function')
+from os.path import dirname
+sys.path.append(dirname(__file__))
+sys.path.append(dirname(__file__)/'function')
 
 from function import handler
 
