@@ -33,25 +33,19 @@ RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/root/.config/pip/pip.conf \
         pip install --no-cache-dir -r requirements.txt
 
-# Build the function directory and install any user-specified components
-USER app
-
+# Install function code
 RUN mkdir -p function
 RUN touch ./function/__init__.py
+COPY --chown=app:app ./function/. /home/app/function/
+RUN chown -R app:app /home/app
+
+# Install any user-specified components
+USER app
 WORKDIR /home/app/function/
-COPY --chown=app:app index.py           .
-COPY --chown=app:app requirements.txt   .
-COPY --chown=app:app function/requirements.txt	.
 RUN --mount=type=secret,id=pipconf,mode=0666,dst=/home/app/.config/pip/pip.conf \
         pip install --no-cache-dir --user -r requirements.txt
 
-# Install function code
-USER root
-COPY --chown=app:app ./function/.   /home/app/function/
-RUN chown -R app:app /home/app
-
-USER app
-
+# Run tests
 FROM build as test
 ARG TEST_COMMAND=tox
 ARG TEST_ENABLED=true
