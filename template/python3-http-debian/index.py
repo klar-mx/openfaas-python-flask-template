@@ -5,7 +5,7 @@ import os
 
 from function import handler
 
-app = Flask(__name__)
+app = Flask(os.environ.get('FLASK_APP', __name__.split('.')[0]))
 
 class Event:
     def __init__(self):

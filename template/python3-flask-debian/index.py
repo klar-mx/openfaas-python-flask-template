@@ -4,7 +4,7 @@ from function import handler
 from waitress import serve
 import os
 
-app = Flask(__name__)
+app = Flask(os.environ.get('FLASK_APP', __name__.split('.')[0]))
 
 # distutils.util.strtobool() can throw an exception
 def is_true(val):
