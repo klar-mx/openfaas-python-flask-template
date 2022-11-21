@@ -3,9 +3,13 @@ from flask import Flask, request, jsonify
 from waitress import serve
 import os
 
-from function import handler
 
 app = Flask(os.environ.get('FLASK_APP', __name__.split('.')[0]))
+
+# Import this after creating the Flask 'app' context above so that
+# handler.py can import it `from flask import current_app as app`.
+from function import handler
+
 
 class Event:
     def __init__(self):

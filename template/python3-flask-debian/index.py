@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 from flask import Flask, request
-from function import handler
 from waitress import serve
 import os
 
+
 app = Flask(os.environ.get('FLASK_APP', __name__.split('.')[0]))
+
+# Import this after creating the Flask 'app' context above so that
+# handler.py can import it `from flask import current_app as app`.
+from function import handler
+
 
 # distutils.util.strtobool() can throw an exception
 def is_true(val):
