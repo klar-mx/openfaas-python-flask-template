@@ -5,6 +5,7 @@ import os
 
 
 app = Flask(os.environ.get('FLASK_APP', __name__.split('.')[0]))
+app.app_context().push()
 
 # Import this after creating the Flask 'app' context above so that
 # handler.py can import it `from flask import current_app as app`.
