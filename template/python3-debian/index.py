@@ -1,5 +1,6 @@
+import os
 import sys
-sys.path.append('./function')
+sys.path.append(os.path.join(os.getcwd(), "function"))
 
 from function import handler
 
