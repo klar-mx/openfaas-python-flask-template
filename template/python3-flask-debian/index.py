@@ -42,4 +42,4 @@ def call_handler(path):
     return ret
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='0.0.0.0', port=5000, server_name=os.environ.get('FLASK_APP', 'faas-fn/python3-flask-debian'), clear_untrusted_proxy_headers=False)
